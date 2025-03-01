@@ -1,1 +1,5 @@
 .venv
+backup.py
+instance/database.sqlite3
+instance/Documents.csv
+instance/Hospitals.csv
