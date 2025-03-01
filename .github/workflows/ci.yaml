@@ -41,6 +41,6 @@ jobs:
         platforms: linux/amd64
         push: ${{ github.event_name != 'pull_request' }}
         tags: |
-          hackday-gitwellsoon/policies-api:latest
-          hackday-gitwellsoon/policies-api:${{ steps.current-time.outputs.formattedTime }}
+          ghcr.io/hackday-gitwellsoon/policies-api:latest
+          ghcr.io/hackday-gitwellsoon/policies-api:${{ steps.current-time.outputs.formattedTime }}
         build-args: VCS_REF=`git rev-parse --short HEAD`
