@@ -5,7 +5,7 @@
 replicaCount: 1
 
 image:
-  repository: lareeth/gitwellsoon-policies-web
+  repository: lareeth/gitwellsoon-policies-api
   pullPolicy: IfNotPresent
   port: 8000
   # Overrides the image tag whose default is the chart appVersion.
