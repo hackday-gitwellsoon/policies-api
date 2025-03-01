@@ -25,6 +25,8 @@ class Documents(db.Model):
 		self.title = title
 		self.description = description
 
+print(jsonify(Documents.query.all()))
+
 class Hospitals(db.Model):
 	_id = db.Column("id", db.Integer, primary_key=True)
 	jurisdiction = db.Column("jurisdiction", db.String)
