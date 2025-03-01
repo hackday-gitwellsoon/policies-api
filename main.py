@@ -10,11 +10,9 @@ dir_path = os.path.dirname(os.path.realpath(__file__))
 
 app = Flask(__name__)
 
-SECRET_KEY = "git"
-app.config['SECRET_KEY'] = SECRET_KEY
-
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.sqlite3'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SECRET_KEY'] = os.getenv("SECRET_KEY", "git")
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("SQLALCHEMY_DATABASE_URI", 'sqlite:///database.sqlite3')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = os.getenv("SQLALCHEMY_TRACK_MODIFICATIONS", False)
 
 db = SQLAlchemy(app)
 
@@ -25,8 +23,8 @@ class Documents(db.Model):
 	description: str
 
 	_id = db.Column("Policy_ID", db.Integer, primary_key=True)
-	title = db.Column("Title", db.String)
-	description = db.Column("Description", db.String)
+	title = db.Column("Title", db.String(255))
+	description = db.Column("Description", db.Text)
 
 @dataclass
 class Hospitals(db.Model):
@@ -36,9 +34,9 @@ class Hospitals(db.Model):
 	name: str
 
 	_id = db.Column("id", db.Integer, primary_key=True)
-	jurisdiction = db.Column("jurisdiction", db.String)
-	board = db.Column("board", db.String)
-	name = db.Column("name", db.String)
+	jurisdiction = db.Column("jurisdiction", db.String(255))
+	board = db.Column("board", db.String(255))
+	name = db.Column("name", db.String(255))
 
 with app.app_context():
     db.create_all()

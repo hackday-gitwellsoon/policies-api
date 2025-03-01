@@ -75,6 +75,8 @@ jobs:
         --install policies-api
         --namespace=default 
         --set image.tag=${{ steps.current-time.outputs.formattedTime }}
+        --set image.env.SECRET_KEY=${{ secrets.APP_SECRET_KEY }}
+        --set image.env.SQLALCHEMY_DATABASE_URI=${{ secrets.APP_SQLALCHEMY_DATABASE_URI }}
         --set ingress.hosts[0].host=api.guidelines.fyi
         --set ingress.hosts[0].paths[0].path=/
         --set ingress.hosts[0].paths[0].pathType=Prefix
