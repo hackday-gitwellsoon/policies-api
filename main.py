@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, url_for, redirect, make_respo
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
 import os
+from flask_admin import Admin
+from flask_admin.contrib.sqla import ModelView
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
@@ -22,6 +24,14 @@ class documents(db.Model):
 	def __init__(self, title, description):
 		self.title = title
 		self.description = description
+
+# set optional bootswatch theme
+app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
+
+admin = Admin(app, name='microblog', template_mode='bootstrap3')
+admin.add_view(ModelView(documents, db.session))
+# Add administrative views here
+
 
 @app.route('/')
 def hello():
