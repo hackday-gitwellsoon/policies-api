@@ -66,7 +66,7 @@ jobs:
 
     - name: Helm tool installer
       if: github.event_name != 'pull_request'
-      uses: azure/setup-helm@v1
+      uses: azure/setup-helm@v4.3.0
 
     - name: Deploy
       if: github.event_name != 'pull_request'
