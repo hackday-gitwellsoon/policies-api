@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from flask import Flask, render_template, request, url_for, redirect, make_response, session, g, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
@@ -17,23 +18,27 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
+@dataclass
 class Documents(db.Model):
+	_id: int
+	title: str
+	description: str
+
 	_id = db.Column("Policy_ID", db.Integer, primary_key=True)
 	title = db.Column("Title", db.String)
 	description = db.Column("Description", db.String)
-	def __init__(self, title, description):
-		self.title = title
-		self.description = description
 
+@dataclass
 class Hospitals(db.Model):
+	_id: int
+	jurisdiction: str
+	board: str
+	name: str
+
 	_id = db.Column("id", db.Integer, primary_key=True)
 	jurisdiction = db.Column("jurisdiction", db.String)
 	board = db.Column("board", db.String)
 	name = db.Column("name", db.String)
-	def __init__(self, jurisdiction, board, name):
-		self.jurisdiction = jurisdiction
-		self.board = board
-		self.name = name
 
 with app.app_context():
     db.create_all()
@@ -49,15 +54,11 @@ admin.add_view(ModelView(Hospitals, db.session))
 
 @app.route('/')
 def hello():
-	test = Documents.query.filter_by(_id = 1).first()
-	query = jsonify(({'title': test.title, 'description': test.description}))
-	return query
+	return jsonify(Documents.query.all())
 
 @app.route('/get_all_hospitals')
 def get_all_hospitals():
-	hospital_database = Hospitals.query.filter_by(jurisdiction = "England").first()
-	hospital_query_all = jsonify(({'jurisdiction': hospital_database.jurisdiction, 'board': hospital_database.board, 'name': hospital_database.name}))
-	return hospital_query_all
+	return jsonify(Hospitals.query.all())
 
 if __name__ == '__main__':
 	app.run(host='0.0.0.0', port=8000)
