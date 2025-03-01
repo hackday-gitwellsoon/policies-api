@@ -13,6 +13,8 @@ db = SQLAlchemy(app)
 
 class technologies(db.Model):
 	_id = db.Column("id", db.Integer, primary_key=True)
+	title = db.Column("title", db.string)
+	description = db.Column("description", db.string)
 
 @app.route('/')
 def hello():
