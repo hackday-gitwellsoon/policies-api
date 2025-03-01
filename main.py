@@ -24,10 +24,20 @@ class documents(db.Model):
 		self.description = description
 
 @app.route('/')
-def hello():
-	test = documents.query.all()
-	query = jsonify(({'title': test.title, 'description': test.description}))
-	return query
+def Hello():
+	# test = documents.query.all()
+	# query = jsonify(({'title': test.title, 'description': test.description}))
+	# return query
+	filter_name = request.args.get("Title")
+	filter_description = request.args.get("Description")
+
+	if filter_name:
+		query = query.filter(documents.title.ilike(f"%{filter_name}"))
+	if filter_description:
+		query = query.filter(documents.description.ilike(f"%{filter_description}"))
+	results = query.all()
+	response = ({'title': Doc.title, 'description': Doc.description} for Doc in results)
+	return jsonify(response)
 
 
 if __name__ == '__main__':
