@@ -13,14 +13,20 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 class documents(db.Model):
-	_id = db.Column("id", db.Integer, primary_key=True)
-	title = db.Column("title", db.String)
-	description = db.Column("description", db.String)
+	_id = db.Column("Policy_ID", db.Integer, primary_key=True)
+	title = db.Column("Title", db.String)
+	description = db.Column("Description", db.String)
+
+
+test = documents.query.all()
+
+@app.before_request
+def pres():
+	print(test)
 
 @app.route('/')
 def hello():
-	return "hello world"
-
+	return
 
 if __name__ == '__main__':
 	app.run(host='0.0.0.0', port=8000)
