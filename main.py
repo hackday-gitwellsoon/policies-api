@@ -53,7 +53,7 @@ def hello():
 
 @app.route('/get_all_hospitals')
 def get_all_hospitals():
-	hospital_database = Hospitals.query.filter_by(_id = 1).first()
+	hospital_database = Hospitals.query.filter_by(jurisdiction = "England").first()
 	hospital_query_all = jsonify(({'jurisdiction': hospital_database.jurisdiction, 'board': hospital_database.board, 'name': hospital_database.name}))
 	return hospital_query_all
 
