@@ -35,6 +35,8 @@ class Hospitals(db.Model):
 		self.board = board
 		self.name = name
 
+with app.app_context():
+    db.create_all()
 
 # set optional bootswatch theme
 app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
@@ -58,5 +60,4 @@ def get_all_hospitals():
 	return hospital_query_all
 
 if __name__ == '__main__':
-	db.create_all()
 	app.run(host='0.0.0.0', port=8000)
