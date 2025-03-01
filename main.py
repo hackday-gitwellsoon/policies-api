@@ -14,8 +14,8 @@ db = SQLAlchemy(app)
 
 class documents(db.Model):
 	_id = db.Column("id", db.Integer, primary_key=True)
-	title = db.Column("title", db.string)
-	description = db.Column("description", db.string)
+	title = db.Column("title", db.String)
+	description = db.Column("description", db.String)
 
 @app.route('/')
 def hello():
