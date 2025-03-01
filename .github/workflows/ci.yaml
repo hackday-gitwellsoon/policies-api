@@ -35,6 +35,13 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
+    - name: Log into registry Dockerhub
+      if: github.event_name != 'pull_request'
+      uses: docker/login-action@v1.12.0
+      with:
+        username: lareeth
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
     - name: Build and push Docker images
       uses: docker/build-push-action@v2.8.0
       with:
@@ -43,4 +50,34 @@ jobs:
         tags: |
           ghcr.io/hackday-gitwellsoon/policies-api:latest
           ghcr.io/hackday-gitwellsoon/policies-api:${{ steps.current-time.outputs.formattedTime }}
+          lareeth/gitwellsoon-policies-api:latest
+          lareeth/gitwellsoon-policies-api:${{ steps.current-time.outputs.formattedTime }}
         build-args: VCS_REF=`git rev-parse --short HEAD`
+
+    - uses: azure/k8s-set-context@v2
+      if: github.event_name != 'pull_request'
+      with:
+        method: service-account
+        k8s-url: https://78.47.170.122:6443
+        k8s-secret: >-
+          data:
+            token: ${{ secrets.KUBE_TOKEN }}
+            ca.crt: LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFcEFJQkFBS0NBUUVBd1UwM0E1TTlYVlpqbHNSUXBRVlRKR3FIUG54UVA0M0ZETEt4ZVd1TG15YjN4NVpNCnpSdEhYd3JGYS92b1JkSUpacTBQYlVWZmVpSVUycGF1b2poRDVGOGtQS0Zta1p5aCtsVzNvM1NCb1ZWVlF0b2UKWW9YaUQwMEs0Vkh4dmlsNkVmYkJKdWpGQk83N1JuTTArZ1FhTXBHZ3dTZlZycXUxYkVWWDFOWVh2VGxyTXNtaQpicGNzeGE1VUZqbHlNTmJseUlvaUNSaFArZUl5MFhEVkxjQTFpdFFDbFVwZWpCL2V6eHlrektiNmF0NlJtT0gyCk5Fbkw0VlBlakhLVWNTdi9JNEV4L2JLTDJKVFFZQU9lZXlRdkgxOGZHSWQzeVh1eHBXWXhuT0R1QmNrWmlRc3QKS0VnalhiejNkL0s0TUVEUkhrVXBXWWNNYWRTb1lmQ0ZPNU0vZVFJREFRQUJBb0lCQVFDUjM2UmhsVTdjemlIUAptQXpIeTlIbmpHRE5uZUN0WlY1TDY5b1VxRDB0YytYTy83U3JvQ2RuS09pOVNkZ0tRS3dKaVJZNFB2OERXdzdqCnVvekZMTExIZDZrUC9EazhMN2pwQXFEWHdFZEhLZTl5eU1uZlRldS80a01Rc05jK3kyd3NmRXRkQXBJVDNBbFMKTEFUUm5DRHRBb3NPMlBIZnBBTUFWd0FtUlA2Yk01Yk1CczBSc01KQUJLUVVsb3Q5N3dncUZJellqa2xhYUFwZQpwTlFtTmwxWjd2ZDRKQzRFZW03cVZReGN5WTE1bERrUGZCdDB6RkF3TmhaMkhwQnl0TEM1azF6ZmVhVEpKQWl4CndHM3pTMXo1SFl2NSt4UU1IM3VxbG81SStwb3FxamVDbmdqNUh5LzBHU21uUkl6c1ZiK1gwd3VYbVp4UUsxSzQKNnRXRlRnS1JBb0dCQU5wTUZZSWYwL2h1SmZjQXRFMW5iRjlvSS9CanZYaEZzcmpScjU1QWVoUWZFUmJQYS9TeApFWWxLV3BGQ1gzUXBQZkxxUzdwV1ovOTN1SVdzdzJ3aVZmZlpLQXYzMU1pWlZNd3NWaVhQRWtpWjRWUDVFR0NtCktJdGQvbmQ4WHh6RnF0MjNHdGh3bGdQVzZWSkVkNDlEZXhpYTBMelF2eGxyUE94dy9hb0ZiKzVGQW9HQkFPS3YKOWttKzhvNklqcUdwbTd0MndTTlM3cUpXTXhML3ZFVk9pOGxvaHZ4UHBkTEt2YzdGM2c4RHZHcEdEVnBRbHBjWQpYS1lXbXFyQ1hmckxoZEU0ME5MN3dJMHFQS0dIdzdzdjh6cENRRDgxVGRDTXpxZi9teTdNY1cyTmI1aXErcUxOClBHaHBpTDBxc2RpT3FMYjRuSzhobUZ3NTA4UldWaXJvV205cjJVbWxBb0dBU1cwbUh1ck54ZFptOXJwSjYyOUsKU0owaTJZenpBaTJQZkJNcjJ6TWMzUC9HSThJSk1ma05TUHkxa2Y2ZFZOazZlU2JONmhOK1Q3UFpZVDFIVG13TwpOcHZZbUkzNENMRnFrSEtwVjNaYlZBaE9mb3hjTWVZeDVRN3N0UXdrZ2UwTEdDQ3E2dnFUdXg3aXhFVTdZZmowCndzWHdTRkordFBJWlAvNlJsRXJYNTNFQ2dZQUg1bklDNS9DMEh2WTVsQnVsVU9JeVJQV2tHclQwK0l5ckxhMloKZTFjWSsvMmZkd2xlWjI3eHZ3T1dBSkwranNod3c1eVcvVHF1c005dHFpSWp4SU1pbHp1Q3IvSWsvd0pIUjhpRwpRMERSOHgyZkl3a2d1YnZDeWNVNk9DK25kbTM5dG9GZ2NpMGR5cHNnSFBpc1I4WE9KTEdXcFQxSUhtb3FYS2FxCk0yd0RNUUtCZ1FDSXgwRERvNE9MV3VHay9rQmJSWkJuaGdZSXpDSHlZVGdadWxEblNIRlcrbjEwaG84MEdPNWMKcFlzYjhBTWFLRFEycTJzbHhDSHQxMXpKY1BKV2RydWdsMEgrL0pHSzNrcm5wbE1BOHJrSkJmNHdzOWxod1JrMApnQytXbEZUM2YwM0ltRlJYNlE1UUFXUjlraitHL0thbUcrNWpGczFieEgrelB0US8wYnFlbXc9PQotLS0tLUVORCBSU0EgUFJJVkFURSBLRVktLS0tLQo=
+
+    - name: Helm tool installer
+      if: github.event_name != 'pull_request'
+      uses: azure/setup-helm@v1
+
+    - name: Deploy
+      if: github.event_name != 'pull_request'
+      run: >
+        helm upgrade
+        --install policies-api
+        --namespace=default 
+        --set image.tag=${{ steps.current-time.outputs.formattedTime }}
+        --set ingress.hosts[0].host=api.guidelines.fyi
+        --set ingress.hosts[0].paths[0].path=/
+        --set ingress.hosts[0].paths[0].pathType=Prefix
+        --set ingress.tls[0].secretName=api-guidelines-fyi-tls
+        --set ingress.tls[0].hosts[0]=api.guidelines.fyi
+        ./chart/
