@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, url_for, redirect, make_response, session, g
+from flask import Flask, render_template, request, url_for, redirect, make_response, session, g, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
 import os
@@ -7,7 +7,7 @@ dir_path = os.path.dirname(os.path.realpath(__file__))
 
 app = Flask(__name__)
 
-SECRET_KEY = "Preschool3-Duration5-Strum1-Tigress0-Shove8-Scenic3-Unaligned6-Nerd7-Reforest0-Produce8"
+SECRET_KEY = "git"
 app.config['SECRET_KEY'] = SECRET_KEY
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.sqlite3'
@@ -25,8 +25,10 @@ class documents(db.Model):
 
 @app.route('/')
 def hello():
-	test = documents.query.filter_by(_id = 1).first()
-	return "hello world"
+	test = documents.query.all()
+	query = jsonify(({'title': test.title, 'description': test.description}))
+	return query
+
 
 if __name__ == '__main__':
 	app.run(host='0.0.0.0', port=8000)
