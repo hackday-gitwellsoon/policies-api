@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
 
@@ -18,7 +18,7 @@ class technologies(db.Model):
 
 @app.route('/')
 def hello():
-	return "Hello World!"
+	return "hello world"
 
 
 if __name__ == '__main__':
