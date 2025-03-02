@@ -79,14 +79,9 @@ def load_defaults():
 
 @app.route('/hospitals')
 def hospital_filter():
-
 	search_query = request.args.get('search_query', default="", type=str)
-
 	results = Hospitals.query.filter(Hospitals.name.ilike(f"%{search_query}%"))
-		
-
-	response = [{'id': Hospitals._id, 'name': Hospitals.name} for doc in results.all()]
-	return jsonify(response)
+	return jsonify(results.all())
 
 if __name__ == '__main__':
 	app.run(host='0.0.0.0', port=8000)
