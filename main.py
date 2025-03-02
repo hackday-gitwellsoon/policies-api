@@ -73,9 +73,19 @@ def load_defaults():
 	elif filter_by == 'Description':
 		results = Documents.query.filter(Documents.description.ilike(f"%{search_query}%"))
 	else:
-		return "hello world"
+		return "error filter not found."
+	response = [{'id': doc._id, 'title': doc.title, 'description': doc.description} for doc in results.all()]
+	return jsonify(response)
 
-	response = [{'title': doc.title, 'description': doc.description} for doc in results.all()]
+@app.route('/hospitals')
+def hospital_filter():
+
+	search_query = request.args.get('search_query', default="", type=str)
+
+	results = Hospitals.query.filter(Hospitals.name.ilike(f"%{search_query}%"))
+		
+
+	response = [{'id': Hospitals._id, 'name': Hospitals.name} for doc in results.all()]
 	return jsonify(response)
 
 if __name__ == '__main__':
