@@ -69,7 +69,7 @@ def document_filter():
 	filter_by = request.args.get('filter_by', default="Title", type=str)
 	hospital_query = request.args.get('hospital_id', default="", type=int)
 
-	hospital_results = Documents.query.filter_by(Documents.hospital_id == hospital_query)
+	hospital_results = Documents.query.filter(Documents.hospital_id == hospital_query)
 
 	if filter_by == 'Title':
 		results  = hospital_results.query.filter(Documents.title.ilike(f"%{search_query}%"))
