@@ -14,7 +14,7 @@ class CKTextAreaField(TextAreaField):
     widget = CKTextAreaWidget()
 
 class DocumentAdmin(ModelView):
-    column_list = ('id', 'title', 'description', 'hospital')
+    column_list = ('id', 'title', 'hospital')
     form_columns = ('title', 'description', 'hospital')
 
     extra_js = ['//cdn.ckeditor.com/4.22.1/standard/ckeditor.js']
