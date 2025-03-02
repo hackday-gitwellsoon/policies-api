@@ -1,20 +1,18 @@
+import os
 from dataclasses import dataclass
 from admin.documentadmin import DocumentAdmin
 from admin.hospitaladmin import HospitalAdmin
-from flask import Flask, render_template, request, url_for, redirect, make_response, session, g, jsonify
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.sql import func
-import os
-from flask_admin import Admin
-from flask_admin.contrib.sqla import ModelView
 
-dir_path = os.path.dirname(os.path.realpath(__file__))
+from flask import Flask, request, jsonify
+from flask_sqlalchemy import SQLAlchemy
+from flask_admin import Admin
 
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = os.getenv("SECRET_KEY", "git")
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("SQLALCHEMY_DATABASE_URI", 'sqlite:///database.sqlite3')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = os.getenv("SQLALCHEMY_TRACK_MODIFICATIONS", False)
+app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
 
 db = SQLAlchemy(app)
 
@@ -32,6 +30,9 @@ class Documents(db.Model):
 	hospital_id = db.Column(db.Integer, db.ForeignKey('hospitals.id'), nullable=False)
 	hospital = db.relationship('Hospitals', backref=db.backref('documents', lazy=True))
 
+	def __str__(self):
+		return f"{self.jurisdiction} / {self.name}"
+
 @dataclass
 class Hospitals(db.Model):
 	_id: int
@@ -47,14 +48,9 @@ class Hospitals(db.Model):
 with app.app_context():
     db.create_all()
 
-# set optional bootswatch theme
-app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
-
-admin = Admin(app, name='microblog', template_mode='bootstrap3')
+admin = Admin(app, name='Policy Admin', template_mode='bootstrap4')
 admin.add_view(DocumentAdmin(Documents, db.session))
 admin.add_view(HospitalAdmin(Hospitals, db.session))
-# Add administrative views here
-
 
 @app.route('/')
 def hello():
