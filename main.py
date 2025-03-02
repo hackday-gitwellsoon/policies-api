@@ -30,9 +30,6 @@ class Documents(db.Model):
 	hospital_id = db.Column(db.Integer, db.ForeignKey('hospitals.id'), nullable=False)
 	hospital = db.relationship('Hospitals', backref=db.backref('documents', lazy=True))
 
-	def __str__(self):
-		return f"{self.jurisdiction} / {self.name}"
-
 @dataclass
 class Hospitals(db.Model):
 	_id: int
@@ -44,6 +41,9 @@ class Hospitals(db.Model):
 	jurisdiction = db.Column("jurisdiction", db.String(255))
 	board = db.Column("board", db.String(255))
 	name = db.Column("name", db.String(255))
+
+	def __str__(self):
+		return f"{self.jurisdiction} / {self.board} / {self.name}"
 
 with app.app_context():
     db.create_all()
