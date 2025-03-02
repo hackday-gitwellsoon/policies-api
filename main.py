@@ -1,4 +1,6 @@
 from dataclasses import dataclass
+from admin.documentadmin import DocumentAdmin
+from admin.hospitaladmin import HospitalAdmin
 from flask import Flask, render_template, request, url_for, redirect, make_response, session, g, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
@@ -21,10 +23,14 @@ class Documents(db.Model):
 	_id: int
 	title: str
 	description: str
+	hospital_id: str
 
-	_id = db.Column("Policy_ID", db.Integer, primary_key=True)
-	title = db.Column("Title", db.String(255))
-	description = db.Column("Description", db.Text)
+	_id = db.Column(db.Integer, primary_key=True)
+	title = db.Column(db.String(255))
+	description = db.Column(db.Text)
+
+	hospital_id = db.Column(db.Integer, db.ForeignKey('hospitals.id'), nullable=False)
+	hospital = db.relationship('Hospitals', backref=db.backref('documents', lazy=True))
 
 @dataclass
 class Hospitals(db.Model):
@@ -45,8 +51,8 @@ with app.app_context():
 app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
 
 admin = Admin(app, name='microblog', template_mode='bootstrap3')
-admin.add_view(ModelView(Documents, db.session))
-admin.add_view(ModelView(Hospitals, db.session))
+admin.add_view(DocumentAdmin(Documents, db.session))
+admin.add_view(HospitalAdmin(Hospitals, db.session))
 # Add administrative views here
 
 

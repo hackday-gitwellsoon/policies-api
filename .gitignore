@@ -1,4 +1,5 @@
 .venv
+__pycache__
 backup.py
 instance/database.sqlite3
 instance/Documents.csv
