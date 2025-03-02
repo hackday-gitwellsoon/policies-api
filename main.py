@@ -89,7 +89,7 @@ def hospital_filter():
 	results = Hospitals.query.filter(Hospitals.name.ilike(f"%{search_query}%"))
 		
 
-	response = [{'id': doc._id, 'title': doc.title} for doc in results.all()]
+	response = [{'id': Hospitals._id, 'name': Hospitals.name} for doc in results.all()]
 	return jsonify(response)
 
 if __name__ == '__main__':
