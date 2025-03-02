@@ -58,5 +58,23 @@ def hello():
 def get_all_hospitals():
 	return jsonify(Hospitals.query.all())
 
+# @app.route('/documents?query="<string:query>"&filter="<string:filter>"',methods=['GET','POST'])
+# def load_defaults(query, filter):
+@app.route('/documents')
+def load_defaults():
+
+	search_query = request.args.get('search_query', default="", type=str)
+	filter_by = request.args.get('filter_by', default="Title", type=str)
+
+	if filter_by == 'Title':
+		results  = Documents.query.filter(Documents.title.ilike(f"%{search_query}%"))
+	elif filter_by == 'Description':
+		results = Documents.query.filter(Documents.description.ilike(f"%{search_query}%"))
+	else:
+		return "hello world"
+
+	response = [{'title': doc.title, 'description': doc.description} for doc in results.all()]
+	return jsonify(response)
+
 if __name__ == '__main__':
 	app.run(host='0.0.0.0', port=8000)
