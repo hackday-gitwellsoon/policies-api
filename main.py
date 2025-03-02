@@ -66,7 +66,6 @@ def get_all_hospitals():
 # def load_defaults(query, filter):
 @app.route('/documents')
 def load_defaults():
-
 	search_query = request.args.get('search_query', default="", type=str)
 	filter_by = request.args.get('filter_by', default="Title", type=str)
 
@@ -76,8 +75,12 @@ def load_defaults():
 		results = Documents.query.filter(Documents.description.ilike(f"%{search_query}%"))
 	else:
 		return "error filter not found."
-	response = [{'id': doc._id, 'title': doc.title, 'description': doc.description} for doc in results.all()]
-	return jsonify(response)
+	return jsonify(results.all())
+
+@app.route('/document_by_id/<id>')
+def document(id):
+	document = Documents.query.get_or_404(id)
+	return jsonify(document)
 
 @app.route('/hospitals')
 def hospital_filter():
