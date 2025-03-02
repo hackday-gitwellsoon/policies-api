@@ -1,11 +1,13 @@
+from io import BytesIO
 import os
 from dataclasses import dataclass
 from admin.documentadmin import DocumentAdmin
 from admin.hospitaladmin import HospitalAdmin
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_file
 from flask_sqlalchemy import SQLAlchemy
 from flask_admin import Admin
+from weasyprint import HTML
 
 app = Flask(__name__)
 
@@ -82,6 +84,18 @@ def hospital_filter():
 	search_query = request.args.get('search_query', default="", type=str)
 	results = Hospitals.query.filter(Hospitals.name.ilike(f"%{search_query}%"))
 	return jsonify(results.all())
+
+@app.route('/download/<id>', methods=['GET'])
+def download(id):
+    document = Documents.query.get_or_404(id)
+    html_content = f"""
+    <h1>{document.title}</h1>
+    {document.description}
+    """
+    pdf_file = BytesIO()
+    HTML(string=html_content).write_pdf(pdf_file)
+    pdf_file.seek(0)
+    return send_file(pdf_file, download_name=f"{document.title}.pdf", as_attachment=True)
 
 if __name__ == '__main__':
 	app.run(host='0.0.0.0', port=8000)
